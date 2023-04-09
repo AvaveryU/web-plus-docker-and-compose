@@ -25,7 +25,7 @@ import { AuthModule } from './auth/auth.module';
       database: 'nest_project',
       synchronize: true,
       entities: [User, Wish, Offer, WishList],
-      subscribers: [],
+      //subscribers: [],
     }),
     UsersModule,
     WishesModule,

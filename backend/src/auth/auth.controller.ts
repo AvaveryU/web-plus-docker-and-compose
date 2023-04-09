@@ -10,7 +10,7 @@ export class AuthController {
   constructor(
     private usersService: UsersService,
     private authService: AuthService,
-  ) {}
+  ) { }
 
   @UseGuards(LocalGuard)
   @Post('signin')

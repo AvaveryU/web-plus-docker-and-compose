@@ -17,7 +17,7 @@ export class WishlistsService {
     @InjectRepository(WishList)
     private wishListRepository: Repository<WishList>,
     private wishesService: WishesService,
-  ) {}
+  ) { }
 
   async create(owner: User, createWishListDto: CreateWishListDto) {
     delete owner.email;
@@ -44,7 +44,7 @@ export class WishlistsService {
 
   async updateOne(
     updateWishListDto: UpdateWishListDto,
-    id: number,
+    id: string,
     userId: number,
   ) {
     const list = await this.findOne({

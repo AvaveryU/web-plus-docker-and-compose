@@ -23,15 +23,15 @@ export const RecoveryPassword = ({ extraClass = "" }) => {
     if (step === 1) {
       setStep(2);
     }
-    // loginUser(userData.username, userData.password).then((res) => {
-    //   if (res && res.auth_token) {
-    //     getUser().then((res) => {
-    //       if (res && res.id) {
-    //         history.replace({ pathname: "/" });
-    //       }
-    //     });
-    //   }
-    // });
+    loginUser(userData.username, userData.password).then((res) => {
+      if (res && res.auth_token) {
+        getUser().then((res) => {
+          if (res && res.id) {
+            history.replace({ pathname: "/" });
+          }
+        });
+      }
+    });
   };
 
   return (

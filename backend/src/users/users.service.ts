@@ -39,12 +39,10 @@ export class UsersService {
   }
 
   async findOne(query: FindOneOptions<User>): Promise<User> {
-    console.log(query, 'query')
     return this.userRepository.findOne(query);
   }
 
   async findUser(username: string): Promise<User> {
-    console.log(username, 'username')
     return await this.userRepository.findOne({ where: { username } });
   }
 

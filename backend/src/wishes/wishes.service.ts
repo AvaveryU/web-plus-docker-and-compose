@@ -15,7 +15,7 @@ export class WishesService {
   constructor(
     @InjectRepository(Wish)
     private wishesRepository: Repository<Wish>,
-  ) {}
+  ) { }
 
   async create(owner: User, createWishDto: CreateWishDto): Promise<Wish> {
     delete owner.email;

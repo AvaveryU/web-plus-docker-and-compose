@@ -14,7 +14,6 @@ export class AuthService {
 
   async auth(user: User) {
     const payload = { sub: user.id };
-    console.log(this.jwtService.sign(payload, { secret: process.env.JWT_SECRET, expiresIn: '24h' }), 'access_token')
     return { access_token: this.jwtService.sign(payload, { secret: process.env.JWT_SECRET, expiresIn: '24h' }) };
   }
 

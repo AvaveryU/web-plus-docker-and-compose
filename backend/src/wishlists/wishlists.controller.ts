@@ -1,15 +1,14 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   ParseIntPipe,
-  Patch,
   Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { Delete, Header, Patch } from '@nestjs/common/decorators';
 import { JwtGuard } from '../auth/jwt.guard';
 import { CreateWishListDto } from '../dto/create-wishlist.dto';
 import { UpdateWishListDto } from '../dto/update-wishlist.dto';
@@ -18,7 +17,7 @@ import { WishlistsService } from './wishlists.service';
 
 @Controller('wishlists')
 export class WishlistsController {
-  constructor(private wishlistsService: WishlistsService) {}
+  constructor(private wishlistsService: WishlistsService) { }
 
   @Get()
   getLists() {
@@ -48,9 +47,10 @@ export class WishlistsController {
 
   @UseGuards(JwtGuard)
   @Patch(':id')
+  @Header('Content-Type', 'application/json')
   async updateWishLists(
     @Body() updateWishListDto: UpdateWishListDto,
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Req() req: RequestUser,
   ) {
     return this.wishlistsService.updateOne(updateWishListDto, id, req.user.id);
