@@ -18,8 +18,8 @@ export class WishesService {
   ) { }
 
   async create(owner: User, createWishDto: CreateWishDto): Promise<Wish> {
-    delete owner.email;
-    delete owner.password;
+    owner?.email && delete owner.email;
+    owner?.password && delete owner.password;
     const newWish = this.wishesRepository.create({
       ...createWishDto,
       owner: owner,
@@ -35,7 +35,7 @@ export class WishesService {
     return this.wishesRepository.find(query);
   }
 
-  async updateOne(updateWishDto: UpdateWishDto, id: number, userId: number) {
+  async updateOne(updateWishDto: UpdateWishDto, id: string, userId: number) {
     const wish = await this.wishesRepository.findOne({
       where: [{ id: +id }],
       relations: {
@@ -70,25 +70,81 @@ export class WishesService {
     wish.raised = count.reduce((a, v) => {
       return a + v;
     }, 0);
-    delete wish.owner.email;
-    delete wish.owner.password;
+    wish.owner?.email && delete wish.owner.email;
+    wish.owner?.password && delete wish.owner.password;
     return wish;
   }
 
-  async findTopWishes(): Promise<Wish[]> {
-    return this.wishesRepository.find({ take: 10, order: { copied: 'DESC' } });
+  async findTopWishes() {
+    const wishes = await this.wishesRepository.find({
+      relations: {
+        owner: true,
+        offers: {
+          item: true,
+        },
+      },
+      order: {
+        copied: 'DESC',
+      },
+      take: 10,
+    });
+
+    const newWishes = wishes.filter((wish) => {
+      if (wish.copied === 0) {
+        return;
+      }
+      return wish;
+
+    });
+    newWishes.forEach((wish) => {
+      const amount = wish.offers.map((offer) => Number(offer.amount));
+
+      wish.raised = amount.reduce(function (acc, val) {
+        return acc + val;
+      }, 0);
+
+      wish.owner?.password && delete wish.owner.password;
+      wish.owner?.email && delete wish.owner.email;
+    });
+
+    return newWishes;
   }
 
-  async findBottomWishes(): Promise<Wish[]> {
-    return this.wishesRepository.find({
+  removeById(id: number) {
+    return this.wishesRepository.delete({ id });
+  }
+
+  async findBottomWishes() {
+    const wishes = await this.wishesRepository.find({
+      relations: {
+        owner: true,
+        offers: {
+          item: true,
+        },
+      },
+      order: {
+        createdAt: 'DESC',
+      },
       take: 40,
-      order: { createdAt: 'DESC' },
     });
+
+    wishes.forEach((wish) => {
+      const amount = wish.offers.map((offer) => Number(offer.amount));
+
+      wish.raised = amount.reduce(function (acc, val) {
+        return acc + val;
+      }, 0);
+
+      wish.owner?.password && delete wish.owner.password;
+      wish.owner?.email && delete wish.owner.email;
+    });
+
+    return wishes;
   }
 
   async remove(id: number, userId: number) {
     const wish = await this.findOne({
-      where: [{ id: id }],
+      where: { id: id },
       relations: {
         owner: true,
         offers: {
@@ -103,9 +159,9 @@ export class WishesService {
     if (userId !== wish.owner.id) {
       throw new ForbiddenException('Это чужой подарок, удаление невозможно!');
     }
-    await this.wishesRepository.delete({ id });
-    delete wish.owner.email;
-    delete wish.owner.password;
+    await this.removeById(id);
+    wish.owner?.email && delete wish.owner.email;
+    wish.owner?.password && delete wish.owner.password;
     return wish;
   }
 
@@ -116,26 +172,10 @@ export class WishesService {
         owner: true,
       },
     });
-    const name = wish.name;
-    const link = wish.link;
-    const price = wish.price;
-    const wishExist = !!(await this.findOne({
-      where: {
-        name,
-        link,
-        price,
-        owner: { id: owner.id },
-      },
-      relations: {
-        owner: true,
-      },
-    }));
-    if (!wishExist) {
-      throw new NotFoundException('Подарок уже был скопирован');
-    }
     if (!wish) {
       throw new NotFoundException();
     }
+
     const copiedWishDto = {
       name: wish.name,
       link: wish.link,
@@ -143,13 +183,14 @@ export class WishesService {
       price: wish.price,
       description: wish.description,
     };
+
     const copiedWish = await this.create(owner, copiedWishDto);
     if (copiedWish) {
       const newWish = {
         ...wish,
         copied: wish.copied + 1,
       };
-      await this.updateOne(newWish, newWish.id, newWish.owner.id);
+      await this.updateOne(newWish, newWish.id.toString(), newWish.owner.id);
     }
     return {};
   }

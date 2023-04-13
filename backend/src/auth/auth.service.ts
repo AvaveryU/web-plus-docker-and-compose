@@ -3,6 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '../entity/User.entity';
 import { HashService } from '../hash/hash.service';
 import { UsersService } from '../users/users.service';
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 @Injectable()
 export class AuthService {
@@ -14,7 +16,11 @@ export class AuthService {
 
   async auth(user: User) {
     const payload = { sub: user.id };
-    return { access_token: this.jwtService.sign(payload, { secret: process.env.JWT_SECRET, expiresIn: '24h' }) };
+    return {
+      access_token: this.jwtService.sign(payload
+        // , { secret: 'jwt_secret', expiresIn: '24h' }
+      )
+    };
   }
 
   async validatePassword(username: string, password: string) {

@@ -1,4 +1,4 @@
-export const URL = "http://167.235.140.175:3001";
+export const URL = "http://localhost:4000";
 
 export const MINIMUM_PASSWORD_LENGTH = 3;
 export const MINIMUM_USERNAME_LENGTH = 3;

@@ -8,18 +8,18 @@ import { JwtStrategy } from './jwt.strategy';
 import { LocalStartegy } from './local.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { HashService } from '../hash/hash.service';
-import { HashModule } from 'src/hash/hash.module';
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 @Module({
   imports: [
     UsersModule,
     ConfigModule,
-    HashModule,
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('jwt_secret') || 'jwt_secret',
+        secret: configService.get('jwt_secret'),
         signOptions: { expiresIn: '24h' },
       }),
       inject: [ConfigService],

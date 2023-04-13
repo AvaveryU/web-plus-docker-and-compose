@@ -12,20 +12,21 @@ import { Wish } from './entity/Wish.entity';
 import { Offer } from './entity/Offer.entity';
 import { WishList } from './entity/WishList.entity';
 import { AuthModule } from './auth/auth.module';
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 @Module({
   imports: [
     ConfigModule.forRoot({ load: [configurations], isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'student',
-      password: 'student',
-      database: 'nest_project',
+      host: process.env.DATABASE_HOST || 'postgres',
+      port: parseInt(process.env.DATABASE_PORT, 10) || 5432,
+      username: process.env.DATABASE_USER || 'student',
+      password: process.env.DATABASE_PASSWORD || 'student',
+      database: process.env.DATABASE_NAME || 'nest_project',
       synchronize: true,
       entities: [User, Wish, Offer, WishList],
-      //subscribers: [],
     }),
     UsersModule,
     WishesModule,

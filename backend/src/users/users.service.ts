@@ -43,7 +43,8 @@ export class UsersService {
   }
 
   async findUser(username: string): Promise<User> {
-    return await this.userRepository.findOne({ where: { username } });
+    const user = await this.userRepository.findOne({ where: { username } });
+    return user
   }
 
   async updateOne(id: number, updateUserDto: UpdateUserDto): Promise<User> {
@@ -75,7 +76,8 @@ export class UsersService {
   }
 
   async findUserData(findUserDto: FindUserDto) {
-    const user = await this.findMany(findUserDto.query);
+    const { query } = findUserDto;
+    const user = await this.findMany(query);
     if (!user) return;
     delete user[0].password;
     return user;
@@ -86,16 +88,30 @@ export class UsersService {
   }
 
   async getUserWishes(id: number) {
-    const user = await this.userRepository.findOne({
+    const user = await this.findOne({
       where: { id: id },
-      select: ['wishes'],
-      relations: ['wishes'],
+      relations: {
+        wishes: {
+          owner: true,
+          offers: {
+            item: { owner: true, offers: true },
+            user: { wishes: true, offers: true, wishlist: true },
+          },
+        },
+      },
     });
 
-    if (!user) {
-      throw new NotFoundException('Пользователь не найден');
-    }
+    const newWishes = user.wishes.filter((wish) => {
+      const amount = wish.offers.map((offer) => Number(offer.amount));
+      delete wish.owner.password;
+      delete wish.owner.email;
+      wish.raised = amount.reduce((acc, val) => {
+        return acc + val;
+      }, 0);
+      wish.price = Number(wish.price);
+      return wish;
+    });
 
-    return user.wishes;
+    return newWishes;
   }
 }

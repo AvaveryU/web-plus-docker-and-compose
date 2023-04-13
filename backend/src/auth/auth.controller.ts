@@ -22,7 +22,7 @@ export class AuthController {
   async signup(@Body() createUserDto: CreateUserDto) {
     const user = await this.usersService.create(createUserDto);
     this.authService.auth(user);
-    delete user.password;
+    if (user.password) delete user.password;
     return user;
   }
 }

@@ -8,20 +8,18 @@ import {
   Get,
   ParseIntPipe,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateWishDto } from '../dto/create-wish.dto';
 import { UpdateWishDto } from '../dto/update-wish.dto';
 import { RequestUser } from '../utils/utils';
 import { WishesService } from './wishes.service';
+import { JwtGuard } from 'src/auth/jwt.guard';
 
+@UseGuards(JwtGuard)
 @Controller('wishes')
 export class WishesController {
-  constructor(private wishesService: WishesService) {}
-
-  @Get(':id')
-  getWishById(@Param('id') id: number) {
-    return this.wishesService.getWishById(id);
-  }
+  constructor(private wishesService: WishesService) { }
 
   @Get('last')
   getLastWish() {
@@ -31,6 +29,11 @@ export class WishesController {
   @Get('top')
   getTopWish() {
     return this.wishesService.findTopWishes();
+  }
+
+  @Get(':id')
+  getWishById(@Param('id') id: number) {
+    return this.wishesService.getWishById(id);
   }
 
   @Post()
@@ -51,7 +54,7 @@ export class WishesController {
   @Patch(':id')
   async updateWish(
     @Body() updateWishDto: UpdateWishDto,
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Req() req: RequestUser,
   ) {
     return this.wishesService.updateOne(updateWishDto, id, req.user.id);
