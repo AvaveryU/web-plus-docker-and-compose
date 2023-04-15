@@ -59,7 +59,7 @@ export class WishesService {
         owner: true,
         offers: {
           item: true,
-          user: { offers: true, wishes: true, wishlist: true },
+          user: { offers: true, wishes: true, wishlists: true },
         },
       },
     });
@@ -149,7 +149,7 @@ export class WishesService {
         owner: true,
         offers: {
           item: true,
-          user: { offers: true, wishes: true, wishlist: true },
+          user: { offers: true, wishes: true, wishlists: true },
         },
       },
     });

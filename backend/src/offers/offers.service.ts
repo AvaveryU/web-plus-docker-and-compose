@@ -16,7 +16,7 @@ export class OffersService {
     @InjectRepository(Offer)
     private offersRepository: Repository<Offer>,
     private wishesService: WishesService,
-  ) {}
+  ) { }
 
   async create(user: User, createOfferDto: CreateOfferDto): Promise<Offer> {
     const wish = await this.wishesService.findOne({
@@ -90,7 +90,7 @@ export class OffersService {
     const offer = await this.offersRepository.findOne({
       where: [{ id: +id }],
       relations: {
-        user: { offers: true, wishes: true, wishlist: true },
+        user: { offers: true, wishes: true, wishlists: true },
         item: { offers: true, owner: true },
       },
     });
@@ -111,7 +111,7 @@ export class OffersService {
         user: {
           offers: { item: true },
           wishes: { offers: true, owner: true },
-          wishlist: true,
+          wishlists: true,
         },
       },
     });

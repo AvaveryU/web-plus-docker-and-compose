@@ -19,6 +19,10 @@ export class WishlistsService {
     private wishesService: WishesService,
   ) { }
 
+  async findMany(query: FindManyOptions<WishList>) {
+    return this.wishListRepository.find(query);
+  }
+
   async create(owner: User, createWishListDto: CreateWishListDto) {
     delete owner.email;
     delete owner.password;
@@ -36,10 +40,6 @@ export class WishlistsService {
 
   async findOne(query: FindOneOptions<WishList>): Promise<WishList> {
     return this.wishListRepository.findOne(query);
-  }
-
-  async findMany(query: FindManyOptions<WishList>) {
-    return this.wishListRepository.find(query);
   }
 
   async updateOne(

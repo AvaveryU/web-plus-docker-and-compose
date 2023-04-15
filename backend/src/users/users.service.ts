@@ -95,7 +95,7 @@ export class UsersService {
           owner: true,
           offers: {
             item: { owner: true, offers: true },
-            user: { wishes: true, offers: true, wishlist: true },
+            user: { wishes: true, offers: true, wishlists: true },
           },
         },
       },

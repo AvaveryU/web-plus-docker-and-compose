@@ -15,7 +15,7 @@ import { UpdateWishListDto } from '../dto/update-wishlist.dto';
 import { RequestUser } from '../utils/utils';
 import { WishlistsService } from './wishlists.service';
 
-@Controller('wishlists')
+@Controller('wishlistlists')
 export class WishlistsController {
   constructor(private wishlistsService: WishlistsService) { }
 
