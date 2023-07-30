@@ -8,6 +8,6 @@
       
 Ознакомится с сервисом можно здесь: 
 
-frontend: https://kupi-avavery.nomoredomains.monster (на текущий момент сервер не оплачен, поэтому возможности ознакомится нет)  
-backend: https://api.kupi-avavery.nomoredomains.monster (на текущий момент сервер не оплачен, поэтому возможности ознакомится нет)  
+frontend: https://kupi-avavery.nomoredomains.monster (на текущий момент сервер не оплачен, поэтому возможности ознакомиться нет)  
+backend: https://api.kupi-avavery.nomoredomains.monster (на текущий момент сервер не оплачен, поэтому возможности ознакомиться нет)  
 публичный IP: 51.250.28.254  
